@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>KHO VÉ BÍ MẬT</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+</head>
+<body>
+    <h2>Khu Vực Admin (Cấm Phận Sự)</h2>
+    
+    <label>Mã bí mật (Secret Key):</label>
+    <input type="password" id="secretKey" placeholder="Nhập key admin...">
+
+    <hr>
+
+    <label>ID Loại Vé (Ticket ID):</label>
+    <input type="number" id="ticketId" placeholder="VD: 1">
+
+    <label>Số lượng muốn thêm:</label>
+    <input type="number" id="amount" placeholder="VD: 50">
+
+    <button onclick="restock()">Nạp Vé Ngay</button>
+
+    <p id="result" style="margin-top: 20px; font-weight: bold;"></p>
+
+    <script>
+        async function restock() {
+            const key = document.getElementById('secretKey').value;
+            const ticketId = document.getElementById('ticketId').value;
+            const amount = document.getElementById('amount').value;
+            const resultMsg = document.getElementById('result');
+
+            if(!key || !ticketId || !amount) {
+                alert("Nhập đủ thông tin đi bạn ơi!");
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/admin/restock-ticket', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Admin-Key': key // Gửi key qua header
+                    },
+                    body: JSON.stringify({
+                        ticketId: ticketId,
+                        amountToAdd: parseInt(amount)
+                    })
+                });
+
+                const text = await response.text();
+                
+                if (response.ok) {
+                    resultMsg.style.color = "lightgreen";
+                    resultMsg.innerText = "✅ Thành công: " + text;
+                } else {
+                    resultMsg.style.color = "red";
+                    resultMsg.innerText = "❌ Lỗi: " + text;
+                }
+            } catch (error) {
+                resultMsg.innerText = "Lỗi mạng hoặc server sập rồi!";
+            }
+        }
+    </script>
+</body>
+</html>
