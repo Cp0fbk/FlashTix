@@ -1,3 +1,14 @@
 spring:
-  application:
-    name: flashtix
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:flashtix}
+    username: ${DB_USER:flashtix}
+    password: ${DB_PASS:flashtix}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+    timeout: 60000ms

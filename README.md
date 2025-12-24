@@ -13,7 +13,7 @@ The project is split into two main parts:
 ## How to Run
 
 ### Prerequisites
-- Java 17+ installed and on your `PATH`
+- Java 21+ installed and on your `PATH`
 - Maven installed (or use the included `mvnw.cmd` on Windows)
 - Node.js (LTS) and npm installed
 
