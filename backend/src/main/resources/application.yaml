@@ -8,7 +8,7 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
-  redis:
-    host: ${REDIS_HOST:localhost}
-    port: ${REDIS_PORT:6379}
-    timeout: 60000ms
+#  redis:
+#    host: ${REDIS_HOST:localhost}
+#    port: ${REDIS_PORT:6379}
+#    timeout: 60000ms
