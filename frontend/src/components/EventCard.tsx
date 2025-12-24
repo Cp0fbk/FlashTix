@@ -1,4 +1,4 @@
-import { Calendar, MapPin, Ticket, AlertCircle } from 'lucide-react';
+import { Calendar, MapPin, Ticket, AlertCircle, Tag } from 'lucide-react';
 import { Event } from '../types/event';
 
 interface EventCardProps {
@@ -29,7 +29,7 @@ export function EventCard({ event, onBookNow }: EventCardProps) {
         )}
       </div>
 
-      <div className="px-5">
+      <div className="px-5 pt-5 flex-grow">
         <div className="mb-3">
           <span className="text-xs font-semibold text-indigo-600 uppercase tracking-wide">
             {event.category}
@@ -47,6 +47,10 @@ export function EventCard({ event, onBookNow }: EventCardProps) {
           <div className="flex items-center text-sm text-gray-600">
             <MapPin className="w-4 h-4 mr-2 text-gray-400" />
             <span>{event.location}</span>
+          </div>
+          <div className="flex items-center text-sm text-gray-600">
+            <Tag className="w-4 h-4 mr-2 text-gray-400" />
+            <span>{event.ticketType}</span>
           </div>
         </div>
 

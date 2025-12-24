@@ -9,6 +9,7 @@ export interface Event {
   totalTickets: number;
   image: string;
   category: string;
+  ticketType: string;
 }
 
 export interface BookingFormData {

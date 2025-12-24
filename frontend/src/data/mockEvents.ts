@@ -11,7 +11,8 @@ export const mockEvents: Event[] = [
     ticketsLeft: 12,
     totalTickets: 500,
     image: 'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=800&h=600&fit=crop',
-    category: 'Music'
+    category: 'Music',
+    ticketType: 'General Admission'
   },
   {
     id: '2',
@@ -23,7 +24,8 @@ export const mockEvents: Event[] = [
     ticketsLeft: 45,
     totalTickets: 300,
     image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=600&fit=crop',
-    category: 'Technology'
+    category: 'Technology',
+    ticketType: 'VIP Pass'
   },
   {
     id: '3',
@@ -35,7 +37,8 @@ export const mockEvents: Event[] = [
     ticketsLeft: 8,
     totalTickets: 150,
     image: 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=800&h=600&fit=crop',
-    category: 'Music'
+    category: 'Music',
+    ticketType: 'Standard'
   },
   {
     id: '4',
@@ -47,6 +50,7 @@ export const mockEvents: Event[] = [
     ticketsLeft: 67,
     totalTickets: 200,
     image: 'https://images.unsplash.com/photo-1511578314322-379afb476865?w=800&h=600&fit=crop',
-    category: 'Networking'
+    category: 'Networking',
+    ticketType: 'Early Bird'
   }
 ];
