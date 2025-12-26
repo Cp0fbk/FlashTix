@@ -40,6 +40,7 @@ public class UserServiceImpl implements UserService {
                     event.getTitle(),
                     event.getStartTime(),
                     event.getLocation(),
+                    event.getBannerUrl(),
                     ticketResponses);
         });
 

@@ -7,6 +7,7 @@ public record EventResponse(
         String title,
         LocalDateTime startTime,
         String location,
+        String bannerUrl,
         List<TicketResponse> tickets) {
 
     public record TicketResponse(
