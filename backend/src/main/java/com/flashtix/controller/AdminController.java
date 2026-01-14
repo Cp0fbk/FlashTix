@@ -25,16 +25,12 @@ public class AdminController {
     private final AdminService adminService;
 
     @PostMapping(value = "/event", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(
-            summary = "Create a new event by admin",
-            description = "Create a new event with title, location, time, ticket types, and optional banner image. " +
-                    "Requires X-Admin-API-Key header. Send event as JSON and tickets as JSON array."
-    )
+    @Operation(summary = "Create a new event by admin", description = "Create a new event with title, location, time, ticket types, and optional banner image. "
+            +
+            "Requires X-Admin-API-Key header. Send event as JSON and tickets as JSON array.")
     public ResponseEntity<ApiResponse<Void>> createEvent(
-            @Parameter(schema = @Schema(implementation = CreateEventRequest.class))
-            @RequestPart("event") String eventJson,
-            @RequestPart(value = "bannerImage", required = false) MultipartFile bannerImage
-    ) {
+            @Parameter(schema = @Schema(implementation = CreateEventRequest.class)) @RequestPart("event") String eventJson,
+            @RequestPart(value = "bannerImage", required = false) MultipartFile bannerImage) {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
 

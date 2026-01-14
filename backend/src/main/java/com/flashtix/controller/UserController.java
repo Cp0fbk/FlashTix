@@ -16,23 +16,23 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/users/tickets")
+@RequestMapping("/api/users/events")
 @RequiredArgsConstructor
 @Tag(name = "User Controller", description = "User apis with ticket")
 public class UserController {
-    private final UserService userService;
+        private final UserService userService;
 
-    @GetMapping("")
-    @Operation(summary = "Get all ticket")
-    public ResponseEntity<ApiResponse<PageResponse<EventResponse>>> getTickets(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "ASC") String sortDir,
-            @RequestParam(defaultValue = "title") String sortBy) {
+        @GetMapping("/tickets")
+        @Operation(summary = "Get all ticket")
+        public ResponseEntity<ApiResponse<PageResponse<EventResponse>>> getTickets(
+                        @RequestParam(defaultValue = "0") int page,
+                        @RequestParam(defaultValue = "10") int size,
+                        @RequestParam(defaultValue = "ASC") String sortDir,
+                        @RequestParam(defaultValue = "title") String sortBy) {
 
-        PageResponse<EventResponse> tickets = userService
-                .getTickets(PageRequest.of(page, size, Sort.Direction.fromString(sortDir), sortBy));
-        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), "Tickets fetched successfully",
-                tickets));
-    }
+                PageResponse<EventResponse> tickets = userService
+                                .getTickets(PageRequest.of(page, size, Sort.Direction.fromString(sortDir), sortBy));
+                return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), "Tickets fetched successfully",
+                                tickets));
+        }
 }

@@ -1,5 +1,8 @@
 package com.flashtix.repository;
 
-public interface TicketTypeRepository {
+import com.flashtix.entity.TicketType;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface TicketTypeRepository extends JpaRepository<TicketType, Long> {
 
 }

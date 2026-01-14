@@ -126,7 +126,6 @@ public class GlobalExceptionHandler {
                 log.error("Unexpected error", ex);
                 ErrorCode errorCode = ErrorCode.INTERNAL_SERVER_ERROR;
 
-                // TODO: Remove ex.getMessage() in production - only for debugging
                 String message = errorCode.getMessage() + " - " + ex.getMessage();
 
                 ApiResponse<Object> response = new ApiResponse<>(

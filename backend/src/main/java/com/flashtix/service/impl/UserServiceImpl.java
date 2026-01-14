@@ -32,7 +32,8 @@ public class UserServiceImpl implements UserService {
                         .map(ticket -> new TicketResponse(
                                 ticket.getName(),
                                 ticket.getPrice(),
-                                ticket.getRemainingQuantity()))
+                                ticket.getRemainingQuantity(),
+                                ticket.getInitialQuantity()))
                         .toList();
             }
 
