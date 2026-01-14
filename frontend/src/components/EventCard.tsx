@@ -14,7 +14,7 @@ export function EventCard({ event, onBookNow }: EventCardProps) {
   const ticketsLeft = event.tickets?.reduce((acc, t) => acc + t.remainingQuantity, 0) || 0;
   const totalTickets = event.tickets?.reduce((acc, t) => acc + (t.initialQuantity || 0), 0) || 0;
   const ticketPercentage = totalTickets > 0 ? (ticketsLeft / totalTickets) * 100 : 0;
-  const isLowStock = ticketsLeft < 20;
+  const isLowStock = ticketPercentage < 15;
 
   const eventDate = new Date(event.startTime);
   const dateStr = eventDate.toLocaleDateString('en-US', {

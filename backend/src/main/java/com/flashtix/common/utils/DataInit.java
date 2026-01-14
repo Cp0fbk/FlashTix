@@ -119,12 +119,29 @@ public class DataInit implements CommandLineRunner {
                         log.info("Successfully initialized 6 events");
 
                         // Create ticket types for each event
-                        createTicketsForEvent(event1, 150.0, 75.0, 50.0);
-                        createTicketsForEvent(event2, 500.0, 250.0, 200.0);
-                        createTicketsForEvent(event3, 80.0, 45.0, 35.0);
-                        createTicketsForEvent(event4, 120.0, 65.0, 50.0);
-                        createTicketsForEvent(event5, 200.0, 120.0, 90.0);
-                        createTicketsForEvent(event6, 100.0, 60.0, 45.0);
+                        createTicketType(event1, "VIP Lounge", 150.0, 50, 5); // Low stock
+                        createTicketType(event1, "Fan Zone", 75.0, 200, 90);
+                        createTicketType(event1, "General Admission", 50.0, 1000, 80);
+
+                        createTicketType(event2, "Investor Pass", 500.0, 50, 10);
+                        createTicketType(event2, "Developer Pass", 250.0, 300, 10);
+                        createTicketType(event2, "Student Pass", 200.0, 100, 10); // Sold out in initialization
+
+                        createTicketType(event3, "Full Experience", 80.0, 100, 10);
+                        createTicketType(event3, "Tasting Pass", 45.0, 300, 30);
+                        createTicketType(event3, "Entry Only", 35.0, 500, 50);
+
+                        createTicketType(event4, "Collector Preview", 120.0, 30, 1); // Very low stock
+                        createTicketType(event4, "Workshop Bundle", 65.0, 50, 50);
+                        createTicketType(event4, "Gallery Access", 50.0, 400, 40);
+
+                        createTicketType(event5, "Luxury Box", 200.0, 20, 20);
+                        createTicketType(event5, "Front Row", 120.0, 100, 10);
+                        createTicketType(event5, "Side Stand", 90.0, 2000, 20);
+
+                        createTicketType(event6, "Front Table", 100.0, 20, 20);
+                        createTicketType(event6, "Standard Seat", 60.0, 150, 15);
+                        createTicketType(event6, "Balcony", 45.0, 100, 10);
 
                         log.info("Successfully initialized ticket types for all events");
                 } else {
@@ -132,33 +149,15 @@ public class DataInit implements CommandLineRunner {
                 }
         }
 
-        private void createTicketsForEvent(Event event, Double vipPrice, Double generalPrice, Double earlyBirdPrice) {
-                TicketType vipTicket = TicketType.builder()
-                                .name("VIP")
+        private void createTicketType(Event event, String name, Double price, Integer initialQuantity,
+                        Integer remainingQuantity) {
+                TicketType ticketType = TicketType.builder()
+                                .name(name)
                                 .event(event)
-                                .price(vipPrice)
-                                .initialQuantity(100)
-                                .remainingQuantity(100)
+                                .price(price)
+                                .initialQuantity(initialQuantity)
+                                .remainingQuantity(remainingQuantity)
                                 .build();
-
-                TicketType generalTicket = TicketType.builder()
-                                .name("General Admission")
-                                .event(event)
-                                .price(generalPrice)
-                                .initialQuantity(500)
-                                .remainingQuantity(500)
-                                .build();
-
-                TicketType earlyBirdTicket = TicketType.builder()
-                                .name("Early Bird")
-                                .event(event)
-                                .price(earlyBirdPrice)
-                                .initialQuantity(200)
-                                .remainingQuantity(200)
-                                .build();
-
-                ticketTypeRepository.save(vipTicket);
-                ticketTypeRepository.save(generalTicket);
-                ticketTypeRepository.save(earlyBirdTicket);
+                ticketTypeRepository.save(ticketType);
         }
 }
