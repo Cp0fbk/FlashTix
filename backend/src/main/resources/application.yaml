@@ -32,10 +32,11 @@ server:
     include-stacktrace: on_param
     include-exception: false
 
-# Admin API Key Configuration
-admin:
-  api:
-    key: ${ADMIN_SECRET_KEY:admin-secret-key-123}
+# JWT Configuration
+jwt:
+  secret: ${JWT_SECRET:7eG1/inJrEApoJpb+z92njxRWEhpDssfm9UaxhQxG+Vs=}
+  expiration: ${JWT_EXPIRATION:86400000}
+
 
 # MinIO Configuration
 minio:

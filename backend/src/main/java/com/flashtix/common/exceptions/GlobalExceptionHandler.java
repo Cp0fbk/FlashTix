@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -19,92 +21,118 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+        private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    // Xử lý AppException
-    @ExceptionHandler(AppException.class)
-    public ResponseEntity<ApiResponse<Object>> handleAppException(AppException ex) {
-        ErrorCode errorCode = ex.getErrorCode();
-        ApiResponse<Object> response = new ApiResponse<>(
-                errorCode.getCode(),
-                ex.getMessage(),
-                null);
-        return ResponseEntity.status(errorCode.getStatus()).body(response);
-    }
-
-    // Xử lý Validation lỗi (Bean Validation @Valid)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse<Object>> handleValidationException(MethodArgumentNotValidException ex) {
-        String errorMessage = ex.getBindingResult().getFieldErrors().stream()
-                .map(err -> err.getField() + ": " + err.getDefaultMessage())
-                .collect(Collectors.joining(", "));
-
-        ApiResponse<Object> response = new ApiResponse<>(
-                ErrorCode.INVALID_REQUEST.getCode(),
-                errorMessage,
-                null);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-    }
-
-    // Xử lý lỗi JSON deserialization (bao gồm invalid enum values)
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ApiResponse<Object>> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
-        String errorMessage = "Invalid input format";
-
-        Throwable cause = ex.getCause();
-        if (cause instanceof InvalidFormatException invalidFormatEx) {
-            if (invalidFormatEx.getTargetType().isEnum()) {
-                String[] enumValues = java.util.Arrays.stream(invalidFormatEx.getTargetType().getEnumConstants())
-                        .map(Object::toString)
-                        .toArray(String[]::new);
-                errorMessage = String.format("Invalid value '%s' for field '%s'. Accepted values are: %s",
-                        invalidFormatEx.getValue(),
-                        invalidFormatEx.getPath().get(0).getFieldName(),
-                        String.join(", ", enumValues));
-            }
+        // Xử lý AppException
+        @ExceptionHandler(AppException.class)
+        public ResponseEntity<ApiResponse<Object>> handleAppException(AppException ex) {
+                ErrorCode errorCode = ex.getErrorCode();
+                ApiResponse<Object> response = new ApiResponse<>(
+                                errorCode.getCode(),
+                                ex.getMessage(),
+                                null);
+                return ResponseEntity.status(errorCode.getStatus()).body(response);
         }
 
-        ApiResponse<Object> response = new ApiResponse<>(
-                ErrorCode.INVALID_REQUEST.getCode(),
-                errorMessage,
-                null);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-    }
+        // Xử lý Validation lỗi (Bean Validation @Valid)
+        @ExceptionHandler(MethodArgumentNotValidException.class)
+        public ResponseEntity<ApiResponse<Object>> handleValidationException(MethodArgumentNotValidException ex) {
+                String errorMessage = ex.getBindingResult().getFieldErrors().stream()
+                                .map(err -> err.getField() + ": " + err.getDefaultMessage())
+                                .collect(Collectors.joining(", "));
 
-    @ExceptionHandler(NoHandlerFoundException.class)
-    public ResponseEntity<ApiResponse<Object>> handleNotFound(NoHandlerFoundException ex) {
-        ApiResponse<Object> response = new ApiResponse<>(
-                ErrorCode.ENDPOINT_NOT_FOUND.getCode(),
-                "Endpoint not found",
-                null
-        );
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-    }
+                ApiResponse<Object> response = new ApiResponse<>(
+                                ErrorCode.INVALID_REQUEST.getCode(),
+                                errorMessage,
+                                null);
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
 
-    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ResponseEntity<ApiResponse<Object>> handleMethodNotSupported(
-            HttpRequestMethodNotSupportedException ex) {
+        // Xử lý lỗi JSON deserialization (bao gồm invalid enum values)
+        @ExceptionHandler(HttpMessageNotReadableException.class)
+        public ResponseEntity<ApiResponse<Object>> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
+                String errorMessage = "Invalid input format";
 
-        String message = "Method " + ex.getMethod() +
-                " is not supported for this endpoint";
+                Throwable cause = ex.getCause();
+                if (cause instanceof InvalidFormatException invalidFormatEx) {
+                        if (invalidFormatEx.getTargetType().isEnum()) {
+                                String[] enumValues = java.util.Arrays
+                                                .stream(invalidFormatEx.getTargetType().getEnumConstants())
+                                                .map(Object::toString)
+                                                .toArray(String[]::new);
+                                errorMessage = String.format(
+                                                "Invalid value '%s' for field '%s'. Accepted values are: %s",
+                                                invalidFormatEx.getValue(),
+                                                invalidFormatEx.getPath().get(0).getFieldName(),
+                                                String.join(", ", enumValues));
+                        }
+                }
 
-        ApiResponse<Object> response = new ApiResponse<>(
-                ErrorCode.METHOD_NOT_ALLOWED.getCode(),
-                message,
-                null
-        );
-        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(response);
-    }
+                ApiResponse<Object> response = new ApiResponse<>(
+                                ErrorCode.INVALID_REQUEST.getCode(),
+                                errorMessage,
+                                null);
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
 
-    // Xử lý lỗi ngoài dự kiến
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<Object>> handleException(Exception ex) {
-        log.error("Unexpected error", ex);
-        ErrorCode errorCode = ErrorCode.INTERNAL_SERVER_ERROR;
-        ApiResponse<Object> response = new ApiResponse<>(
-                errorCode.getCode(),
-                errorCode.getMessage(),
-                null);
-        return ResponseEntity.status(errorCode.getStatus()).body(response);
-    }
+        @ExceptionHandler(NoHandlerFoundException.class)
+        public ResponseEntity<ApiResponse<Object>> handleNotFound(NoHandlerFoundException ex) {
+                ApiResponse<Object> response = new ApiResponse<>(
+                                ErrorCode.ENDPOINT_NOT_FOUND.getCode(),
+                                "Endpoint not found",
+                                null);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+        public ResponseEntity<ApiResponse<Object>> handleMethodNotSupported(
+                        HttpRequestMethodNotSupportedException ex) {
+
+                String message = "Method " + ex.getMethod() +
+                                " is not supported for this endpoint";
+
+                ApiResponse<Object> response = new ApiResponse<>(
+                                ErrorCode.METHOD_NOT_ALLOWED.getCode(),
+                                message,
+                                null);
+                return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(response);
+        }
+
+        // Handle authentication failures (invalid credentials)
+        @ExceptionHandler(BadCredentialsException.class)
+        public ResponseEntity<ApiResponse<Object>> handleBadCredentials(BadCredentialsException ex) {
+                log.warn("Authentication failed: {}", ex.getMessage());
+                ApiResponse<Object> response = new ApiResponse<>(
+                                ErrorCode.UNAUTHORIZED.getCode(),
+                                ex.getMessage(),
+                                null);
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+
+        // Handle authorization failures (access denied)
+        @ExceptionHandler(AccessDeniedException.class)
+        public ResponseEntity<ApiResponse<Object>> handleAccessDenied(AccessDeniedException ex) {
+                log.warn("Access denied: {}", ex.getMessage());
+                ApiResponse<Object> response = new ApiResponse<>(
+                                ErrorCode.FORBIDDEN.getCode(),
+                                "You don't have permission to access this resource",
+                                null);
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+        }
+
+        // Xử lý lỗi ngoài dự kiến
+        @ExceptionHandler(Exception.class)
+        public ResponseEntity<ApiResponse<Object>> handleException(Exception ex) {
+                log.error("Unexpected error", ex);
+                ErrorCode errorCode = ErrorCode.INTERNAL_SERVER_ERROR;
+
+                // TODO: Remove ex.getMessage() in production - only for debugging
+                String message = errorCode.getMessage() + " - " + ex.getMessage();
+
+                ApiResponse<Object> response = new ApiResponse<>(
+                                errorCode.getCode(),
+                                message,
+                                null);
+                return ResponseEntity.status(errorCode.getStatus()).body(response);
+        }
 }

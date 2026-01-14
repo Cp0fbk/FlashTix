@@ -1,4 +1,4 @@
-package com.flashtix.common.dto;
+package com.flashtix.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,11 +6,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class ApiResponse<T> {
-    private Integer status;
-    private String message;
-    private T data;
+public class LoginResponse {
+    private String token;
+    private String email;
+    private String role;
 }
