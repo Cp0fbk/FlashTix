@@ -1,15 +1,17 @@
-export interface Event {
-  id: string;
-  title: string;
-  date: string;
-  time: string;
-  location: string;
+export interface Ticket {
+  name: string;
   price: number;
-  ticketsLeft: number;
-  totalTickets: number;
-  image: string;
-  category: string;
-  ticketType: string;
+  remainingQuantity: number;
+  initialQuantity: number;
+}
+
+export interface Event {
+  id: number;
+  title: string;
+  startTime: string;
+  location: string;
+  bannerUrl: string;
+  tickets: Ticket[];
 }
 
 export interface BookingFormData {
@@ -17,4 +19,5 @@ export interface BookingFormData {
   email: string;
   phone: string;
   quantity: number;
+  ticketType: string;
 }
