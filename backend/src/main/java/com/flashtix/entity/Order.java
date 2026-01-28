@@ -49,6 +49,9 @@ public class Order {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
+    @Column(name = "expired_at")
+    private LocalDateTime expiredAt;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<Payment> payments;
 }

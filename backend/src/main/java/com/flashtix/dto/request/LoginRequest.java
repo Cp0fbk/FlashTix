@@ -1,4 +1,4 @@
-package com.flashtix.dto;
+package com.flashtix.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

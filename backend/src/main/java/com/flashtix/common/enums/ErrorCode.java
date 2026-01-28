@@ -12,6 +12,7 @@ public enum ErrorCode {
     ENDPOINT_NOT_FOUND(4041, HttpStatus.NOT_FOUND, "Endpoint not found"),
     METHOD_NOT_ALLOWED(4051, HttpStatus.METHOD_NOT_ALLOWED, "Method not allowed"),
     DUPLICATE_RESOURCE(409, HttpStatus.CONFLICT, "Duplicate resource"),
+    OUT_OF_STOCK(4090, HttpStatus.CONFLICT, "Ticket is sold out"),
     ;
 
     private final int code;

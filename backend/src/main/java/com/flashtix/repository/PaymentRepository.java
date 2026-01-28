@@ -1,4 +1,7 @@
 package com.flashtix.repository;
 
-public interface PaymentRepository {
+import com.flashtix.entity.Payment;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface PaymentRepository extends JpaRepository<Payment, Long> {
 }

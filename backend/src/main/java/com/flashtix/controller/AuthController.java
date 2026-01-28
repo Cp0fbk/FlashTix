@@ -1,8 +1,8 @@
 package com.flashtix.controller;
 
 import com.flashtix.common.dto.ApiResponse;
-import com.flashtix.dto.LoginRequest;
-import com.flashtix.dto.LoginResponse;
+import com.flashtix.dto.request.LoginRequest;
+import com.flashtix.dto.response.LoginResponse;
 import com.flashtix.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -13,7 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 @RequiredArgsConstructor
 @Tag(name = "Authentication Controller", description = "Authentication and authorization APIs")
 public class AuthController {

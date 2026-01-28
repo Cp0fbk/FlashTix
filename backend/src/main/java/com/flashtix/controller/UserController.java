@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.flashtix.common.dto.ApiResponse;
 import com.flashtix.common.dto.PageResponse;
-import com.flashtix.dto.EventResponse;
+import com.flashtix.dto.response.EventResponse;
 import com.flashtix.service.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,7 +16,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/users/events")
+@RequestMapping("/users/events")
 @RequiredArgsConstructor
 @Tag(name = "User Controller", description = "User apis with ticket")
 public class UserController {

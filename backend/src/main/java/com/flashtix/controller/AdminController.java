@@ -3,7 +3,7 @@ package com.flashtix.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.flashtix.common.dto.ApiResponse;
-import com.flashtix.dto.CreateEventRequest;
+import com.flashtix.dto.request.CreateEventRequest;
 import com.flashtix.service.AdminService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/api/admin")
+@RequestMapping("/admin")
 @RequiredArgsConstructor
 @Tag(name = "Admin Controller", description = "APIs for admin operations")
 public class AdminController {
@@ -25,9 +25,7 @@ public class AdminController {
     private final AdminService adminService;
 
     @PostMapping(value = "/event", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "Create a new event by admin", description = "Create a new event with title, location, time, ticket types, and optional banner image. "
-            +
-            "Requires X-Admin-API-Key header. Send event as JSON and tickets as JSON array.")
+    @Operation(summary = "Create a new event by admin", description = "Create a new event with title, location, time, ticket types, and optional banner image. ")
     public ResponseEntity<ApiResponse<Void>> createEvent(
             @Parameter(schema = @Schema(implementation = CreateEventRequest.class)) @RequestPart("event") String eventJson,
             @RequestPart(value = "bannerImage", required = false) MultipartFile bannerImage) {

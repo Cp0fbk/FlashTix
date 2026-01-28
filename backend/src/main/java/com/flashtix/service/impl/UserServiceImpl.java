@@ -7,8 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.flashtix.common.dto.PageResponse;
-import com.flashtix.dto.EventResponse;
-import com.flashtix.dto.EventResponse.TicketResponse;
+import com.flashtix.dto.response.EventResponse;
+import com.flashtix.dto.response.EventResponse.TicketResponse;
 import com.flashtix.entity.Event;
 import com.flashtix.repository.EventRepository;
 import com.flashtix.service.UserService;
@@ -30,6 +30,7 @@ public class UserServiceImpl implements UserService {
             if (event.getTicketTypes() != null && !event.getTicketTypes().isEmpty()) {
                 ticketResponses = event.getTicketTypes().stream()
                         .map(ticket -> new TicketResponse(
+                                ticket.getId(),
                                 ticket.getName(),
                                 ticket.getPrice(),
                                 ticket.getRemainingQuantity(),

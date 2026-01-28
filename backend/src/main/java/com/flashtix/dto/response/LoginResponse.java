@@ -1,4 +1,4 @@
-package com.flashtix.dto;
+package com.flashtix.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

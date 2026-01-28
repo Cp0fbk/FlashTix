@@ -1,8 +1,8 @@
 package com.flashtix.service.impl;
 
 import com.flashtix.common.utils.JwtUtil;
-import com.flashtix.dto.LoginRequest;
-import com.flashtix.dto.LoginResponse;
+import com.flashtix.dto.request.LoginRequest;
+import com.flashtix.dto.response.LoginResponse;
 import com.flashtix.entity.User;
 import com.flashtix.repository.UserRepository;
 import com.flashtix.service.AuthService;

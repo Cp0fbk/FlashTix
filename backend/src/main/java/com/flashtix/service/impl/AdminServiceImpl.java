@@ -2,8 +2,8 @@ package com.flashtix.service.impl;
 
 import com.flashtix.common.enums.ErrorCode;
 import com.flashtix.common.exceptions.AppException;
-import com.flashtix.dto.CreateEventRequest;
-import com.flashtix.dto.CreateEventRequest.TicketRequest;
+import com.flashtix.dto.request.CreateEventRequest;
+import com.flashtix.dto.request.CreateEventRequest.TicketRequest;
 import com.flashtix.entity.Event;
 import com.flashtix.entity.TicketType;
 import com.flashtix.repository.EventRepository;
@@ -97,11 +97,11 @@ public class AdminServiceImpl implements AdminService {
         }
         if (ticket.price() == null || ticket.price() < 0) {
             throw new AppException(ErrorCode.INVALID_REQUEST,
-                "Ticket price for '" + ticket.name() + "' must be a non-negative number");
+                    "Ticket price for '" + ticket.name() + "' must be a non-negative number");
         }
         if (ticket.quantity() == null || ticket.quantity() < 1) {
             throw new AppException(ErrorCode.INVALID_REQUEST,
-                "Ticket quantity for '" + ticket.name() + "' must be at least 1");
+                    "Ticket quantity for '" + ticket.name() + "' must be at least 1");
         }
     }
 

@@ -1,4 +1,4 @@
-package com.flashtix.dto;
+package com.flashtix.dto.response;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -11,6 +11,7 @@ public record EventResponse(
                 List<TicketResponse> tickets) {
 
         public record TicketResponse(
+                        Long ticketId,
                         String name,
                         double price,
                         int remainingQuantity,

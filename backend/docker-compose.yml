@@ -29,11 +29,11 @@ services:
       timeout: 20s
       retries: 3
 
-#  redis:
-#    image: redis:7-alpine
-#    ports:
-#      - "${REDIS_PORT:-6379}:6379"
-#    command: ["redis-server", "--save", "60", "1", "--appendonly", "no"]
+  redis:
+    image: redis:7-alpine
+    ports:
+     - "${REDIS_PORT:-6379}:6379"
+    command: ["redis-server", "--save", "60", "1", "--appendonly", "no"]
 
 volumes:
   pgdata:

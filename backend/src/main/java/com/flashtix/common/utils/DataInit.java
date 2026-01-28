@@ -119,29 +119,29 @@ public class DataInit implements CommandLineRunner {
                         log.info("Successfully initialized 6 events");
 
                         // Create ticket types for each event
-                        createTicketType(event1, "VIP Lounge", 150.0, 50, 5); // Low stock
-                        createTicketType(event1, "Fan Zone", 75.0, 200, 90);
-                        createTicketType(event1, "General Admission", 50.0, 1000, 80);
+                        createTicketType(event1, "VIP Lounge", 3750000.0, 50, 5); // Low stock
+                        createTicketType(event1, "Fan Zone", 1875000.0, 200, 90);
+                        createTicketType(event1, "General Admission", 1250000.0, 1000, 80);
 
-                        createTicketType(event2, "Investor Pass", 500.0, 50, 10);
-                        createTicketType(event2, "Developer Pass", 250.0, 300, 10);
-                        createTicketType(event2, "Student Pass", 200.0, 100, 10); // Sold out in initialization
+                        createTicketType(event2, "Investor Pass", 12500000.0, 50, 10);
+                        createTicketType(event2, "Developer Pass", 6250000.0, 300, 10);
+                        createTicketType(event2, "Student Pass", 5000000.0, 100, 10); // Sold out in initialization
 
-                        createTicketType(event3, "Full Experience", 80.0, 100, 10);
-                        createTicketType(event3, "Tasting Pass", 45.0, 300, 30);
-                        createTicketType(event3, "Entry Only", 35.0, 500, 50);
+                        createTicketType(event3, "Full Experience", 2000000.0, 100, 10);
+                        createTicketType(event3, "Tasting Pass", 1125000.0, 300, 30);
+                        createTicketType(event3, "Entry Only", 875000.0, 500, 50);
 
-                        createTicketType(event4, "Collector Preview", 120.0, 30, 1); // Very low stock
-                        createTicketType(event4, "Workshop Bundle", 65.0, 50, 50);
-                        createTicketType(event4, "Gallery Access", 50.0, 400, 40);
+                        createTicketType(event4, "Collector Preview", 3000000.0, 30, 1); // Very low stock
+                        createTicketType(event4, "Workshop Bundle", 1625000.0, 50, 50);
+                        createTicketType(event4, "Gallery Access", 1250000.0, 400, 40);
 
-                        createTicketType(event5, "Luxury Box", 200.0, 20, 20);
-                        createTicketType(event5, "Front Row", 120.0, 100, 10);
-                        createTicketType(event5, "Side Stand", 90.0, 2000, 20);
+                        createTicketType(event5, "Luxury Box", 5000000.0, 20, 20);
+                        createTicketType(event5, "Front Row", 3000000.0, 100, 10);
+                        createTicketType(event5, "Side Stand", 2250000.0, 2000, 20);
 
-                        createTicketType(event6, "Front Table", 100.0, 20, 20);
-                        createTicketType(event6, "Standard Seat", 60.0, 150, 15);
-                        createTicketType(event6, "Balcony", 45.0, 100, 10);
+                        createTicketType(event6, "Front Table", 2500000.0, 20, 20);
+                        createTicketType(event6, "Standard Seat", 1500000.0, 150, 15);
+                        createTicketType(event6, "Balcony", 1125000.0, 100, 10);
 
                         log.info("Successfully initialized ticket types for all events");
                 } else {
