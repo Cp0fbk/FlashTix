@@ -90,6 +90,24 @@ public class OrderServiceImpl implements OrderService {
         order.setStatus(OrderStatus.PAID);
         orderRepository.save(order);
 
+        // Update database remaining_quantity to sync with Redis
+        TicketType ticketType = order.getTicketType();
+        int newRemainingQuantity = ticketType.getRemainingQuantity() - order.getQuantity();
+
+        if (newRemainingQuantity < 0) {
+            log.warn("Database remaining quantity for ticket type {} went negative: {}",
+                    ticketType.getId(), newRemainingQuantity);
+            newRemainingQuantity = 0;
+        }
+
+        ticketType.setRemainingQuantity(newRemainingQuantity);
+        ticketTypeRepository.save(ticketType);
+
+        log.info("Updated ticket type {} remaining quantity: {} -> {}",
+                ticketType.getId(),
+                ticketType.getRemainingQuantity() + order.getQuantity(),
+                newRemainingQuantity);
+
         // Record Payment with actual transaction ID from MoMo if available
         String transactionCode = transactionId != null
                 ? String.valueOf(transactionId)

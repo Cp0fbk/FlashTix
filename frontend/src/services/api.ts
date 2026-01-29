@@ -51,7 +51,7 @@ class ApiService {
         });
 
         return this.request<ApiResponse<PageResponse<Event>>>(
-            `/api/users/events/tickets?${queryParams.toString()}`
+            `/users/events/tickets?${queryParams.toString()}`
         );
     }
 }
