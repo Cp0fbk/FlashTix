@@ -39,6 +39,7 @@ public class UserServiceImpl implements UserService {
             }
 
             return new EventResponse(
+                    event.getId(),
                     event.getTitle(),
                     event.getStartTime(),
                     event.getLocation(),

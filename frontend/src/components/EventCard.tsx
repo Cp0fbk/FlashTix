@@ -38,7 +38,7 @@ export function EventCard({ event, onBookNow }: EventCardProps) {
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
         />
         <div className="absolute top-2 sm:top-3 right-2 sm:right-3 bg-white px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs sm:text-sm font-bold text-indigo-600">
-          ${minPrice}
+          {minPrice.toLocaleString('en-US')} VND
         </div>
         {isLowStock && (
           <div className="absolute top-2 sm:top-3 left-2 sm:left-3 bg-red-500 text-white px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs font-semibold flex items-center space-x-1">

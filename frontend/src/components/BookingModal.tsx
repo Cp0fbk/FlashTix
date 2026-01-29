@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import { X, User, Mail, Phone, Ticket as TicketIcon, Minus, Plus, Loader2, CheckCircle, Calendar, MapPin, ChevronDown, Check } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { X, User, Mail, Phone, Ticket as TicketIcon, Minus, Plus, Loader2, Calendar, MapPin, ChevronDown, Check } from 'lucide-react';
 import { Event, BookingFormData } from '@/types/event';
 
 interface BookingModalProps {
@@ -8,9 +9,10 @@ interface BookingModalProps {
   onClose: () => void;
 }
 
-type BookingStep = 'form' | 'loading' | 'otp' | 'success';
+type BookingStep = 'form' | 'loading' | 'otp';
 
 export function BookingModal({ event, isOpen, onClose }: BookingModalProps) {
+  const navigate = useNavigate();
   const [step, setStep] = useState<BookingStep>('form');
   const [formData, setFormData] = useState<BookingFormData>({
     fullName: '',
@@ -20,15 +22,8 @@ export function BookingModal({ event, isOpen, onClose }: BookingModalProps) {
     ticketType: '',
   });
   const [otp, setOtp] = useState('');
-  const [orderId, setOrderId] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (event?.tickets?.length && !formData.ticketType) {
-      setFormData(prev => ({ ...prev, ticketType: event.tickets[0].name }));
-    }
-  }, [event, formData.ticketType]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -44,9 +39,8 @@ export function BookingModal({ event, isOpen, onClose }: BookingModalProps) {
 
   const handleClose = () => {
     setStep('form');
-    setFormData({ fullName: '', email: '', phone: '', quantity: 1, ticketType: event.tickets[0]?.name || '' });
+    setFormData({ fullName: '', email: '', phone: '', quantity: 1, ticketType: '' });
     setOtp('');
-    setOrderId('');
     onClose();
   };
 
@@ -73,8 +67,23 @@ export function BookingModal({ event, isOpen, onClose }: BookingModalProps) {
 
     setTimeout(() => {
       const generatedOrderId = `FTX${Date.now().toString().slice(-8)}`;
-      setOrderId(generatedOrderId);
-      setStep('success');
+
+      // Navigate to success page with booking data
+      navigate('/payment/success', {
+        state: {
+          orderId: generatedOrderId,
+          event: event,
+          formData: formData,
+          selectedTicket: selectedTicket,
+          totalPrice: totalPrice
+        }
+      });
+
+      // Close modal and reset
+      onClose();
+      setStep('form');
+      setFormData({ fullName: '', email: '', phone: '', quantity: 1, ticketType: event.tickets[0]?.name || '' });
+      setOtp('');
     }, 1000);
   };
 
@@ -90,16 +99,14 @@ export function BookingModal({ event, isOpen, onClose }: BookingModalProps) {
         <span className="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
 
         <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle max-w-lg sm:max-w-lg w-full">
-          {step !== 'success' && (
-            <div className="absolute top-2 sm:top-4 right-2 sm:right-4 z-10">
-              <button
-                onClick={handleClose}
-                className="text-gray-400 hover:text-gray-600 transition-colors p-1"
-              >
-                <X className="w-5 h-5 sm:w-6 sm:h-6" />
-              </button>
-            </div>
-          )}
+          <div className="absolute top-2 sm:top-4 right-2 sm:right-4 z-10">
+            <button
+              onClick={handleClose}
+              className="text-gray-400 hover:text-gray-600 transition-colors p-1"
+            >
+              <X className="w-5 h-5 sm:w-6 sm:h-6" />
+            </button>
+          </div>
 
           {step === 'form' && (
             <div className="bg-white px-4 sm:px-6 pt-4 sm:pt-6 pb-4 sm:pb-6">
@@ -193,10 +200,10 @@ export function BookingModal({ event, isOpen, onClose }: BookingModalProps) {
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                     className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-600 focus:border-transparent outline-none transition-all text-sm sm:text-base bg-white text-left flex justify-between items-center"
                   >
-                    <span className="truncate">
+                    <span className={`truncate ${!formData.ticketType ? 'text-gray-400' : ''}`}>
                       {formData.ticketType
-                        ? `${formData.ticketType} - $${event.tickets.find(t => t.name === formData.ticketType)?.price}`
-                        : 'Select Ticket'}
+                        ? `${formData.ticketType} - ${event.tickets.find(t => t.name === formData.ticketType)?.price.toLocaleString('en-US')} VND`
+                        : 'Select Ticket Type'}
                     </span>
                     <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform ${isDropdownOpen ? 'transform rotate-180' : ''}`} />
                   </button>
@@ -267,7 +274,7 @@ export function BookingModal({ event, isOpen, onClose }: BookingModalProps) {
                 <div className="bg-gray-50 rounded-lg p-3 sm:p-4 mt-3 sm:mt-4">
                   <div className="flex justify-between items-center">
                     <span className="text-sm sm:text-base text-gray-700 font-medium">Total Amount:</span>
-                    <span className="text-xl sm:text-2xl font-bold text-indigo-600">${totalPrice.toFixed(2)}</span>
+                    <span className="text-xl sm:text-2xl font-bold text-indigo-600">{totalPrice.toLocaleString('en-US')} VND</span>
                   </div>
                 </div>
 
@@ -330,50 +337,6 @@ export function BookingModal({ event, isOpen, onClose }: BookingModalProps) {
                   Resend OTP
                 </button>
               </div>
-            </div>
-          )}
-
-          {step === 'success' && (
-            <div className="bg-white px-4 sm:px-6 py-8 sm:py-12 text-center">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6 animate-bounce">
-                <CheckCircle className="w-10 h-10 sm:w-12 sm:h-12 text-green-600" />
-              </div>
-              <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1.5 sm:mb-2">Booking Confirmed!</h3>
-              <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6">Your tickets have been successfully booked.</p>
-
-              <div className="bg-gray-50 rounded-lg p-4 sm:p-6 mb-4 sm:mb-6">
-                <div className="text-xs sm:text-sm text-gray-500 mb-1">Order ID</div>
-                <div className="text-xl sm:text-2xl font-mono font-bold text-indigo-600">{orderId}</div>
-              </div>
-
-              <div className="bg-indigo-50 rounded-lg p-3 sm:p-4 mb-4 sm:mb-6 text-left">
-                <h4 className="font-semibold text-sm sm:text-base text-gray-900 mb-2 sm:mb-3">{event.title}</h4>
-                <div className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-gray-600">
-                  <div className="flex justify-between">
-                    <span>Ticket Type:</span>
-                    <span className="font-medium text-gray-900">{formData.ticketType}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Quantity:</span>
-                    <span className="font-medium text-gray-900">{formData.quantity}x</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Total Paid:</span>
-                    <span className="font-bold text-indigo-600">${totalPrice.toFixed(2)}</span>
-                  </div>
-                </div>
-              </div>
-
-              <p className="text-xs sm:text-sm text-gray-500 mb-4 sm:mb-6">
-                A confirmation email has been sent to <span className="font-medium text-gray-900 truncate inline-block max-w-[200px]">{formData.email}</span>
-              </p>
-
-              <button
-                onClick={handleClose}
-                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 sm:py-3 px-4 rounded-lg transition-colors duration-200 text-sm sm:text-base"
-              >
-                Done
-              </button>
             </div>
           )}
         </div>
