@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { X, User, Mail, Phone, Ticket as TicketIcon, Minus, Plus, Loader2, CheckCircle, Calendar, MapPin, ChevronDown, Check } from 'lucide-react';
-import { Event, BookingFormData } from '../types/event';
+import { Event, BookingFormData } from '@/types/event';
 
 interface BookingModalProps {
   event: Event | null;

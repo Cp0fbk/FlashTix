@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
-import { Navbar } from './components/Navbar';
-import { Hero } from './components/Hero';
-import { EventCard } from './components/EventCard';
-import { BookingModal } from './components/BookingModal';
-import { Pagination } from './components/Pagination';
-import { Event } from './types/event';
-import { apiService } from './services/api';
-import { PageResponse } from './types/api';
+import { Navbar } from '@/components/Navbar';
+import { Hero } from '@/components/Hero';
+import { EventCard } from '@/components/EventCard';
+import { BookingModal } from '@/components/BookingModal';
+import { Pagination } from '@/components/Pagination';
+import { Event } from '@/types/event';
+import { apiService } from '@/services/api';
+import { PageResponse } from '@/types/api';
 
 function App() {
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);

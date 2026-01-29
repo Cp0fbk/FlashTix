@@ -1,5 +1,5 @@
 import { Calendar, MapPin, Ticket, AlertCircle, Tag } from 'lucide-react';
-import { Event } from '../types/event';
+import { Event } from '@/types/event';
 
 interface EventCardProps {
   event: Event;
