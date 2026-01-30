@@ -11,6 +11,7 @@ import com.flashtix.entity.TicketType;
 import com.flashtix.repository.OrderRepository;
 import com.flashtix.repository.PaymentRepository;
 import com.flashtix.repository.TicketTypeRepository;
+import com.flashtix.service.EmailService;
 import com.flashtix.service.OrderService;
 import com.flashtix.service.PaymentService;
 import com.flashtix.service.TicketInventoryService;
@@ -33,6 +34,7 @@ public class OrderServiceImpl implements OrderService {
     private final TicketTypeRepository ticketTypeRepository;
     private final PaymentRepository paymentRepository;
     private final PaymentService moMoService;
+    private final EmailService emailService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -124,7 +126,9 @@ public class OrderServiceImpl implements OrderService {
 
         paymentRepository.save(payment);
 
-        // TODO: Send Email Async
+        // Send payment confirmation email asynchronously
+        emailService.sendPaymentConfirmationEmail(order, payment);
+
         log.info("Order {} paid successfully with transaction ID: {}", orderCode, transactionCode);
     }
 
