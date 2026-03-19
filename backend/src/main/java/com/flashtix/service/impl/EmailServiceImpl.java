@@ -39,7 +39,7 @@ public class EmailServiceImpl implements EmailService {
 
             helper.setFrom(String.format("%s <%s>", mailFromName, mailFrom));
             helper.setTo(order.getCustomerEmail());
-            helper.setSubject("Payment Confirmation - Order #" + order.getOrderCode());
+            helper.setSubject("Payment Confirmation - Booking #" + order.getBookingCode());
 
             String htmlContent = buildEmailContent(order, payment);
             helper.setText(htmlContent, true);
@@ -91,18 +91,15 @@ public class EmailServiceImpl implements EmailService {
                                                 Your payment has been successfully processed. Here are your order details:
                                             </p>
 
+                                            <!-- Booking Code Highlight -->
+                                            <div style="background: linear-gradient(135deg, #667eea 0%%, #764ba2 100%%); border-radius: 8px; padding: 25px; margin-bottom: 30px; text-align: center;">
+                                                <p style="margin: 0 0 10px 0; color: #ffffff; font-size: 14px; opacity: 0.9;">YOUR BOOKING CODE</p>
+                                                <p style="margin: 0; color: #ffffff; font-size: 32px; font-weight: 700; letter-spacing: 2px;">%s</p>
+                                                <p style="margin: 15px 0 0 0; color: #ffffff; font-size: 13px; opacity: 0.9;">Use this code to check in at the event entrance</p>
+                                            </div>
+
                                             <!-- Order Details -->
                                             <table width="100%%" cellpadding="0" cellspacing="0" style="background-color: #f8f9fa; border-radius: 8px; padding: 20px; margin-bottom: 30px;">
-                                                <tr>
-                                                    <td style="padding: 10px 0; border-bottom: 1px solid #e0e0e0;">
-                                                        <table width="100%%" cellpadding="0" cellspacing="0">
-                                                            <tr>
-                                                                <td style="color: #666666; font-size: 14px;">Order Code:</td>
-                                                                <td align="right" style="color: #333333; font-size: 14px; font-weight: 600;">%s</td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                </tr>
                                                 <tr>
                                                     <td style="padding: 10px 0; border-bottom: 1px solid #e0e0e0;">
                                                         <table width="100%%" cellpadding="0" cellspacing="0">
@@ -198,7 +195,7 @@ public class EmailServiceImpl implements EmailService {
                 """
                 .formatted(
                         order.getCustomerName(),
-                        order.getOrderCode(),
+                        order.getBookingCode(),
                         eventName,
                         ticketTypeName,
                         order.getQuantity(),

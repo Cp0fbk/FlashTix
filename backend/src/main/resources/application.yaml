@@ -6,22 +6,82 @@ spring:
     username: ${DB_USER:flashtix}
     password: ${DB_PASS:flashtix}
     driver-class-name: org.postgresql.Driver
+    
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+    # Optional: ensure it starts from V1 if needed, but baseline handles existing
+    
+    # PERFORMANCE: HikariCP connection pool configuration
+    hikari:
+      # Max connections for high traffic
+      maximum-pool-size: ${DB_POOL_SIZE:20}
+      # Minimum idle connections
+      minimum-idle: ${DB_POOL_MIN_IDLE:5}
+      # 30 seconds max wait
+      connection-timeout: 30000
+      # 10 minutes idle before close
+      idle-timeout: 600000
+      # 30 minutes max connection lifetime
+      max-lifetime: 1800000
+      # Health check query
+      connection-test-query: SELECT 1
+      pool-name: FlashTixHikariPool
+      
   jpa:
     hibernate:
-      ddl-auto: update
-    show-sql: true
+      # Flyway will manage the schema, Hibernate will only validate
+      ddl-auto: none
+    # PERFORMANCE: Disable in production (env var)
+    show-sql: ${SHOW_SQL:false}
     properties:
       hibernate:
         format_sql: true
+        
+        # PERFORMANCE: Enable batch operations for bulk inserts/updates
+        jdbc:
+          # Process 50 statements per batch
+          batch_size: 50
+          # Optimize insert order
+          order_inserts: true
+          # Optimize update order
+          order_updates: true
+          
+        # Query optimization
+        query:
+          # 10 second query timeout
+          timeout: 10000
+          # Increase plan cache
+          plan_cache_max_size: 2048
+          
+        # Statistics for monitoring (disable in production if needed)
+        generate_statistics: ${HIBERNATE_STATS:false}
+        
   servlet:
     multipart:
       enabled: true
       max-file-size: 10MB
       max-request-size: 10MB
+      
   redis:
     host: ${REDIS_HOST:localhost}
-    port: ${REDIS_PORT:6379}
+    port: ${REDIS_PORT:6380}
     timeout: 60000ms
+    
+    # PERFORMANCE: Lettuce connection pool configuration
+    lettuce:
+      pool:
+        # Maximum connections
+        max-active: 20
+        # Maximum idle connections
+        max-idle: 10
+        # Minimum idle connections
+        min-idle: 5
+        # Max wait for connection
+        max-wait: 2000ms
+      shutdown-timeout: 100ms
+      
   mail:
     host: ${MAIL_HOST:smtp.gmail.com}
     port: ${MAIL_PORT:587}

@@ -21,8 +21,11 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(name = "order_code", unique = true, nullable = false)
     private String orderCode;
+
+    @Column(name = "booking_code", unique = true, nullable = false)
+    private String bookingCode;
 
     @Column(name = "customer_name", nullable = false)
     private String customerName;
@@ -33,7 +36,7 @@ public class Order {
     @Column(name = "customer_phone", nullable = false)
     private String customerPhone;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY) // PERFORMANCE: Avoid EAGER fetch
     @JoinColumn(name = "ticket_type_id")
     private TicketType ticketType;
 
@@ -52,6 +55,9 @@ public class Order {
     @Column(name = "expired_at")
     private LocalDateTime expiredAt;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Ticket> tickets;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Payment> payments;
 }

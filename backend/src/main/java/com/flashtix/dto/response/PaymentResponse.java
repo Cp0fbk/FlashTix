@@ -4,6 +4,8 @@ import lombok.Builder;
 
 @Builder
 public record PaymentResponse(
-                String orderCode,
-                String paymentUrl) {
+        String orderCode,
+        String bookingCode,
+        Integer quantity,
+        String paymentUrl) {
 }

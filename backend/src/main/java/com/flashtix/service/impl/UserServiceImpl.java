@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.flashtix.common.dto.PageResponse;
 import com.flashtix.dto.response.EventResponse;
@@ -21,8 +22,10 @@ public class UserServiceImpl implements UserService {
     private final EventRepository eventRepository;
 
     @Override
+    @Transactional(readOnly = true) // PERFORMANCE: Read-only optimization
     public PageResponse<EventResponse> getTickets(Pageable pageable) {
-        Page<Event> eventPage = eventRepository.findAllWithTicketTypes(pageable);
+        // PERFORMANCE: Uses @EntityGraph to eagerly fetch ticketTypes
+        Page<Event> eventPage = eventRepository.findAll(pageable);
 
         Page<EventResponse> responsePage = eventPage.map(event -> {
             // Map all ticket types to TicketResponse

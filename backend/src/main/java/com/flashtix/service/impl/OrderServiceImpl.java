@@ -7,20 +7,25 @@ import com.flashtix.dto.response.MoMoPaymentResponse;
 import com.flashtix.dto.response.PaymentResponse;
 import com.flashtix.entity.Order;
 import com.flashtix.entity.Payment;
+import com.flashtix.entity.Ticket;
 import com.flashtix.entity.TicketType;
 import com.flashtix.repository.OrderRepository;
 import com.flashtix.repository.PaymentRepository;
+import com.flashtix.repository.TicketRepository;
 import com.flashtix.repository.TicketTypeRepository;
 import com.flashtix.service.EmailService;
 import com.flashtix.service.OrderService;
 import com.flashtix.service.PaymentService;
 import com.flashtix.service.TicketInventoryService;
+import com.flashtix.common.util.BookingCodeGenerator;
+import com.flashtix.common.enums.TicketStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -35,6 +40,8 @@ public class OrderServiceImpl implements OrderService {
     private final PaymentRepository paymentRepository;
     private final PaymentService moMoService;
     private final EmailService emailService;
+    private final BookingCodeGenerator bookingCodeGenerator;
+    private final TicketRepository ticketRepository;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -43,8 +50,13 @@ public class OrderServiceImpl implements OrderService {
         try {
             TicketType ticketType = ticketTypeRepository.findById(request.ticketTypeId())
                     .orElseThrow(() -> new RuntimeException("Ticket Type not found"));
+
+            String orderCode = UUID.randomUUID().toString();
+            String bookingCode = generateUniqueBookingCode();
+
             Order order = Order.builder()
-                    .orderCode(UUID.randomUUID().toString())
+                    .orderCode(orderCode)
+                    .bookingCode(bookingCode)
                     .customerName(request.customerName())
                     .customerEmail(request.customerEmail())
                     .customerPhone(request.customerPhone())
@@ -67,6 +79,8 @@ public class OrderServiceImpl implements OrderService {
             }
             return PaymentResponse.builder()
                     .orderCode(order.getOrderCode())
+                    .bookingCode(order.getBookingCode())
+                    .quantity(order.getQuantity())
                     .paymentUrl(momoResponse.payUrl()) // Real MoMo payment URL
                     .build();
         } catch (Exception e) {
@@ -74,6 +88,14 @@ public class OrderServiceImpl implements OrderService {
             ticketInventoryService.revertStock(request.ticketTypeId(), request.quantity());
             throw e;
         }
+    }
+
+    private String generateUniqueBookingCode() {
+        String bookingCode;
+        do {
+            bookingCode = bookingCodeGenerator.generate();
+        } while (orderRepository.findByBookingCode(bookingCode) != null);
+        return bookingCode;
     }
 
     @Override
@@ -91,6 +113,24 @@ public class OrderServiceImpl implements OrderService {
 
         order.setStatus(OrderStatus.PAID);
         orderRepository.save(order);
+
+        // PERFORMANCE OPTIMIZATION: Generate individual tickets for this order
+        // Build all tickets in memory first, then batch insert
+        List<Ticket> tickets = new ArrayList<>();
+        for (int i = 0; i < order.getQuantity(); i++) {
+            String ticketCode = generateUniqueTicketCode();
+            Ticket ticket = Ticket.builder()
+                    .ticketCode(ticketCode)
+                    .order(order)
+                    .status(TicketStatus.ACTIVE)
+                    .build();
+            tickets.add(ticket);
+        }
+
+        // Batch insert - single database round trip
+        ticketRepository.saveAll(tickets);
+
+        log.info("Created {} tickets for order {}", order.getQuantity(), orderCode);
 
         // Update database remaining_quantity to sync with Redis
         TicketType ticketType = order.getTicketType();
@@ -130,6 +170,14 @@ public class OrderServiceImpl implements OrderService {
         emailService.sendPaymentConfirmationEmail(order, payment);
 
         log.info("Order {} paid successfully with transaction ID: {}", orderCode, transactionCode);
+    }
+
+    private String generateUniqueTicketCode() {
+        String ticketCode;
+        do {
+            ticketCode = bookingCodeGenerator.generateTicketCode();
+        } while (ticketRepository.findByTicketCode(ticketCode).isPresent());
+        return ticketCode;
     }
 
     @Override
